@@ -1,0 +1,41 @@
+export default {
+  name: "nuke",
+  run: async (client, message, args) => {
+    if (!message.member.permissions.has("ManageChannels")) {
+      return message.reply("You need Manage Channels.");
+    }
+
+    const channel = message.channel;
+
+    const newChannel = await channel.clone();
+    await newChannel.setPosition(channel.position);
+    await channel.delete();
+
+    newChannel.send("💣 Channel nuked.");
+  }
+};
+const whitelist = new Set();
+
+export default {
+  name: "whitelist",
+  run: async (client, message, args) => {
+    if (message.author.id !== "YOUR_ID") {
+      return message.reply("You cannot manage the whitelist.");
+    }
+
+    const sub = args[0];
+    const userId = args[1];
+
+    if (sub === "add") {
+      whitelist.add(userId);
+      return message.reply(`Added <@${userId}>`);
+    }
+
+    if (sub === "remove") {
+      whitelist.delete(userId);
+      return message.reply(`Removed <@${userId}>`);
+    }
+
+    return message.reply("Use: !whitelist add/remove <userId>");
+  }
+};
